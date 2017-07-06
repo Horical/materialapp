@@ -10,8 +10,10 @@ import com.horical.hrc7.lib_base.helper.finder.ViewFinder;
  * Created by HRC7 on 6/30/2017.
  */
 
-public abstract class BaseDialog<T> extends Dialog {
+public abstract class BaseDialog<T, K> extends Dialog {
     private T item;
+    private K listener;
+
     public BaseDialog(@NonNull Context context) {
         super(context);
         ViewFinder.load(this);
@@ -21,6 +23,10 @@ public abstract class BaseDialog<T> extends Dialog {
         this.item = item;
         onBind(item);
         return this;
+    }
+
+    protected K getListener() {
+        return listener;
     }
 
     protected abstract void onBind(T item);

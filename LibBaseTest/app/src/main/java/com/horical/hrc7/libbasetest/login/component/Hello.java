@@ -16,7 +16,7 @@ import com.horical.hrc7.libbasetest.R;
  */
 
 @MyLayout(R.layout.dialog_hello)
-public class Hello extends BaseDialog<User> {
+public class Hello extends BaseDialog<User,Object> {
     @ViewChild(R.id.dialog_item)
     TextView textView;
 
@@ -28,5 +28,10 @@ public class Hello extends BaseDialog<User> {
     @Override
     protected void onBind(User item) {
         textView.setText(item.getName());
+    }
+
+    public interface Listener
+    {
+
     }
 }
