@@ -1,0 +1,3 @@
+include ':app'
+include ':supplier'
+project (":supplier").projectDir = new File(settingsDir,"../MaterialApp/supplier")
