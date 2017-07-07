@@ -1,3 +1,3 @@
 include ':app'
 include ':lib_base'
-project (":lib_base").projectDir = new File(settingsDir,"../MaterialApp/lib_base")
+project (":lib_base").projectDir = new File(settingsDir,"../lib_base")
