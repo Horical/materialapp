@@ -33,4 +33,5 @@ dependencies {
     compile 'com.snappydb:snappydb-lib:0.5.2'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
     testCompile 'junit:junit:4.12'
+    compile project(path: ':lib_supports')
 }

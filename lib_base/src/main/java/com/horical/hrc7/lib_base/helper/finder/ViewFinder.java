@@ -2,6 +2,7 @@ package com.horical.hrc7.lib_base.helper.finder;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -64,7 +65,7 @@ public class ViewFinder {
      */
     static public View load(Fragment fragment, ViewGroup viewGroup) {
         View container = inflateView(fragment, viewGroup);
-        loadView(fragment,container);
+        loadView(fragment, container);
         return container;
     }
 
@@ -126,27 +127,18 @@ public class ViewFinder {
     /**
      * Inflate layout xml to java
      *
-     * @param view Viewgroup
+     * @param viewGroup Viewgroup
      */
-    public static View inflateView(ViewGroup view) {
-        Class clazz = view.getClass();
+    public static View inflateView(ViewGroup viewGroup) {
+        Class clazz = viewGroup.getClass();
         MyLayout myLayout = (MyLayout) clazz.getAnnotation(MyLayout.class);
         if (myLayout == null)
-            throw new RuntimeException(view.getClass().getSimpleName() + " not found layout");
-        return LayoutInflater.from(view.getContext()).inflate(myLayout.value(), view, true);
-    }
-
-    /**
-     * Inflate layout xml to java
-     *
-     * @param view Viewgroup
-     */
-    public static View inflateView(ViewGroup view, boolean attachToRoot) {
-        Class clazz = view.getClass();
-        MyLayout myLayout = (MyLayout) clazz.getAnnotation(MyLayout.class);
-        if (myLayout == null)
-            throw new RuntimeException(view.getClass().getSimpleName() + " not found layout");
-        return LayoutInflater.from(view.getContext()).inflate(myLayout.value(), view, attachToRoot);
+            throw new RuntimeException(viewGroup.getClass().getSimpleName() + " not found layout");
+        View viewContainer =
+                LayoutInflater.from(viewGroup.getContext()).inflate(findIdLayout(viewGroup.getContext(), myLayout), viewGroup, true);
+        if (viewContainer == null)
+            throw new RuntimeException(viewGroup.getClass().getSimpleName() + " not found layout");
+        return viewContainer;
     }
 
     /**
@@ -159,7 +151,7 @@ public class ViewFinder {
         MyLayout myLayout = (MyLayout) clazz.getAnnotation(MyLayout.class);
         if (myLayout == null)
             throw new RuntimeException(clazz.getSimpleName() + " not found layout");
-        dialog.setContentView(myLayout.value());
+        dialog.setContentView(findIdLayout(dialog.getContext(), myLayout));
     }
 
     /**
@@ -172,7 +164,7 @@ public class ViewFinder {
         MyLayout myLayout = (MyLayout) clazz.getAnnotation(MyLayout.class);
         if (myLayout == null)
             throw new RuntimeException(fragment.getClass().getSimpleName() + " not found layout");
-        return LayoutInflater.from(fragment.getContext()).inflate(myLayout.value(), container, false);
+        return LayoutInflater.from(fragment.getContext()).inflate(findIdLayout(fragment.getContext(), myLayout), container, false);
     }
 
     /**
@@ -182,7 +174,6 @@ public class ViewFinder {
      */
     public static void loadView(Object view) {
         if (!((view instanceof View)
-                || (view instanceof Fragment)
                 || (view instanceof Dialog)
                 || (view instanceof Activity)
         ))
@@ -196,17 +187,11 @@ public class ViewFinder {
             ViewChild viewChild = field.getAnnotation(ViewChild.class);
             if (viewChild != null) {
                 try {
-                    Method findViewById = clazz.getMethod("findViewById", int.class);
-                    View v = (View) findViewById.invoke(view, viewChild.value());
-                    if (v == null) throw new RuntimeException("Can't find view");
+                    View v = findView(view, viewChild);
                     field.setAccessible(true);
                     field.set(view, v);
                     field.setAccessible(false);
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (NoSuchMethodException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -221,16 +206,14 @@ public class ViewFinder {
     public static void loadViewHolder(RecyclerView.ViewHolder view) {
         Class clazz = view.getClass();
         Object itemView = null;
-        Method findViewById = null;
         try {
             itemView = clazz.getSuperclass().getSuperclass().getDeclaredField("itemView").get(view);
-            findViewById = itemView.getClass().getMethod("findViewById", int.class);
-
+            if (itemView == null) throw new ClassNotFoundException("Not found item view");
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
@@ -241,14 +224,11 @@ public class ViewFinder {
             ViewChild viewChild = field.getAnnotation(ViewChild.class);
             if (viewChild != null) {
                 try {
-                    View v = (View) findViewById.invoke(itemView, viewChild.value());
-                    if (v == null) throw new RuntimeException("Can't find view");
+                    View v = findView(itemView, viewChild);
                     field.setAccessible(true);
                     field.set(view, v);
                     field.setAccessible(false);
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -271,8 +251,7 @@ public class ViewFinder {
             ViewChild viewChild = field.getAnnotation(ViewChild.class);
             if (viewChild != null) {
                 try {
-                    View v = viewContainer.findViewById(viewChild.value());
-                    if (v == null) throw new RuntimeException("Can't find view");
+                    View v = findView(viewContainer, viewChild);
                     field.setAccessible(true);
                     field.set(obj, v);
                     field.setAccessible(false);
@@ -282,4 +261,57 @@ public class ViewFinder {
             }
         }
     }
+
+    private static View findView(Object container, ViewChild viewChild) {
+        Class clazz = container.getClass();
+
+        try {
+            Method findViewById = clazz.getMethod("findViewById", int.class);
+            Context context = (Context) clazz.getMethod("getContext").invoke(container);
+            View view = null;
+            int id = 0;
+            if (viewChild.value() != 0) {
+                id = viewChild.value();
+            } else if (!viewChild.name().equals("")) {
+                id = getViewIdByName(context, viewChild.name());
+            }
+            if (id == 0) throw new ClassNotFoundException("Can't find view");
+
+            view = (View) findViewById.invoke(container, (id));
+            if (view == null) throw new ClassNotFoundException("Can't find view");
+
+            return view;
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private static int findIdLayout(Context context, MyLayout myLayout) {
+        int id = 0;
+        if (myLayout.value() != 0) {
+            id = myLayout.value();
+        } else if (!myLayout.name().equals("")) {
+            id = getLayoutIdByName(context, myLayout.name());
+        }
+
+        if (id == 0)
+            throw new RuntimeException(" Not found id layout");
+        return id;
+    }
+
+    private static int getLayoutIdByName(Context context, String name) {
+        return context.getResources().getIdentifier(name, "layout", context.getPackageName());
+    }
+
+    private static int getViewIdByName(Context context, String name) {
+        return context.getResources().getIdentifier(name, "id", context.getPackageName());
+    }
+
 }

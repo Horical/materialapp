@@ -37,24 +37,26 @@ public class StyleableFinder {
             if (myAttr != null) {
                 f.setAccessible(true);
 
+                int id = getAttr(view.getContext(), myAttr);
+
                 switch (myAttr.type()) {
                     case DIMENSION:
-                        f.set(view, typedArray.getDimension(myAttr.attr(),myAttr.defFloat() ));
+                        f.set(view, typedArray.getDimension(id, myAttr.defFloat()));
                         break;
                     case BOOL:
-                        f.set(view, typedArray.getBoolean(myAttr.attr(), myAttr.defBool()));
+                        f.set(view, typedArray.getBoolean(id, myAttr.defBool()));
                         break;
                     case COLOR:
-                        f.set(view, typedArray.getColor(myAttr.attr(), myAttr.defInt()));
+                        f.set(view, typedArray.getColor(id, myAttr.defInt()));
                         break;
                     case STRING:
-                        f.set(view, typedArray.getString(myAttr.attr()));
+                        f.set(view, typedArray.getString(id));
                         break;
                     case INTERGER:
-                        f.set(view, typedArray.getInteger(myAttr.attr(), myAttr.defInt()));
+                        f.set(view, typedArray.getInteger(id, myAttr.defInt()));
                         break;
                     case FLOAT:
-                        f.set(view, typedArray.getFloat(myAttr.attr(), myAttr.defFloat()));
+                        f.set(view, typedArray.getFloat(id, myAttr.defFloat()));
                         break;
                     case ENUM:
                         throw new RuntimeException("Enum not supported currently");
@@ -91,8 +93,15 @@ public class StyleableFinder {
         return null;
     }
 
-    private static int getAttr(Context context, String attrName) {
-        return context.getResources().getIdentifier(attrName, "attr",
-                context.getApplicationContext().getPackageName());
+    private static int getAttr(Context context, MyAttr myAttr) {
+        int id = -1;
+        if (myAttr.id() != -1) {
+            id = myAttr.id();
+        } else if (!myAttr.name().equals("")) {
+            id = context.getResources().getIdentifier(myAttr.name(), "id",
+                    context.getPackageName());
+        }
+        if (id == -1) throw new RuntimeException("Can't found attribute");
+        return id;
     }
 }

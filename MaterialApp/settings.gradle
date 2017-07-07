@@ -1,0 +1,13 @@
+include ':app'
+
+include ':lib_base'
+project(':lib_base').projectDir = new File(settingsDir,"../lib_base");
+
+include ':supplier'
+project(':supplier').projectDir = new File(settingsDir,"../supplier");
+
+include ':lib_supports'
+project(':lib_supports').projectDir = new File(settingsDir,"../lib_supports");
+
+include ':components'
+project(':components').projectDir = new File(settingsDir,"../components");

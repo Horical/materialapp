@@ -11,7 +11,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MyAttr {
-    int attr();
+    int id() default -1;
+
+    String name() default "";
 
     byte type();
 
