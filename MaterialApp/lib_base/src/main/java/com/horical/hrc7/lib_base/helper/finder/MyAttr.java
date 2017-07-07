@@ -14,4 +14,10 @@ public @interface MyAttr {
     int attr();
 
     byte type();
+
+    int defInt() default 0;
+
+    float defFloat() default 0f;
+
+    boolean defBool() default false;
 }

@@ -12,7 +12,10 @@ import com.horical.hrc7.lib_base.helper.finder.StyleableFinder;
  * Created by HRC7 on 7/6/2017.
  */
 
-public abstract class BaseView extends View {
+public abstract class BaseView<T, K> extends View {
+    T item;
+    K listener;
+
     public BaseView(Context context) {
         super(context);
         onInit(null);
@@ -35,4 +38,19 @@ public abstract class BaseView extends View {
             throw new RuntimeException(e);
         }
     }
+
+    public void bind(T item) {
+        this.item = item;
+        onBind(item);
+    }
+
+    protected K getListener() {
+        return listener;
+    }
+
+    public void setListener(K listener) {
+        this.listener = listener;
+    }
+
+    protected abstract void onBind(T item);
 }

@@ -29,5 +29,9 @@ public abstract class BaseDialog<T, K> extends Dialog {
         return listener;
     }
 
+    public void setListener(K listener) {
+        this.listener = listener;
+    }
+
     protected abstract void onBind(T item);
 }

@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".login.LoginActivity" />
+        <activity android:name=".hola.install.HolaActivity" />
     </application>
 
 </manifest>

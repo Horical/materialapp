@@ -39,22 +39,22 @@ public class StyleableFinder {
 
                 switch (myAttr.type()) {
                     case DIMENSION:
-                        f.set(view, typedArray.getDimension(myAttr.attr(), f.getFloat(view)));
+                        f.set(view, typedArray.getDimension(myAttr.attr(),myAttr.defFloat() ));
                         break;
                     case BOOL:
-                        f.set(view, typedArray.getBoolean(myAttr.attr(), f.getBoolean(view)));
+                        f.set(view, typedArray.getBoolean(myAttr.attr(), myAttr.defBool()));
                         break;
                     case COLOR:
-                        f.set(view, typedArray.getColor(myAttr.attr(), f.getInt(view)));
+                        f.set(view, typedArray.getColor(myAttr.attr(), myAttr.defInt()));
                         break;
                     case STRING:
                         f.set(view, typedArray.getString(myAttr.attr()));
                         break;
                     case INTERGER:
-                        f.set(view, typedArray.getInteger(myAttr.attr(), f.getInt(view)));
+                        f.set(view, typedArray.getInteger(myAttr.attr(), myAttr.defInt()));
                         break;
                     case FLOAT:
-                        f.set(view, typedArray.getFloat(myAttr.attr(), f.getFloat(view)));
+                        f.set(view, typedArray.getFloat(myAttr.attr(), myAttr.defFloat()));
                         break;
                     case ENUM:
                         throw new RuntimeException("Enum not supported currently");

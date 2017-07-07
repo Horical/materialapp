@@ -1,4 +1,4 @@
-package com.horical.hrc7.libbasetest.login.component.circle_view;
+package com.horical.hrc7.libbasetest.login.component.custom_view.circle_view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,37 +7,45 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.horical.hrc7.lib_base.custom_view.BaseView;
+import com.horical.hrc7.lib_base.helper.finder.MyAttr;
+
 /**
  * Created by HRC7 on 7/6/2017.
  */
 
-public abstract class CircleStrategy extends View {
+public abstract class CircleStrategy extends BaseView {
 
     private static final int DELTA_PERCENT = 5;
+
     protected int percent;
     protected int timeDelay;
     protected int currentPercent;
 
     public CircleStrategy(Context context) {
         super(context);
-        init();
     }
 
     public CircleStrategy(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public CircleStrategy(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
-    protected void init() {
+    @Override
+    protected void onInit(AttributeSet attrs) {
+        super.onInit(attrs);
         percent = 0;
         timeDelay = 0;
         currentPercent = 0;
         setWillNotDraw(false);
+    }
+
+    @Override
+    protected void onBind(Object item) {
+
     }
 
     public void bind(int percent, int timeDelay) {
@@ -59,7 +67,6 @@ public abstract class CircleStrategy extends View {
         if (!isFinishDraw())
             requestDrawNext();
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

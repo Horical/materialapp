@@ -1,4 +1,4 @@
-package com.horical.hrc7.libbasetest.login.component.circle_view;
+package com.horical.hrc7.libbasetest.login.component.custom_view.circle_view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -30,8 +30,8 @@ public class CircleView extends CircleStrategy {
     }
 
     @Override
-    protected void init() {
-        super.init();
+    protected void onInit(AttributeSet attrs) {
+        super.onInit(attrs);
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.RED);

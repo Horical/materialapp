@@ -6,10 +6,4 @@
     android:layout_height="match_parent"
     tools:context="com.horical.hrc7.libbasetest.MainActivity">
 
-    <com.horical.hrc7.libbasetest.login.component.custom_view.BaseCustomView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:size="70dp"
-        />
-
 </android.support.constraint.ConstraintLayout>

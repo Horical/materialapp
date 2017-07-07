@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="${nameMaterialTheme}.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
+    <style name="MyMaterialTheme" parent="${nameMaterialTheme}.Base">
         <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>
         <item name="android:windowAllowEnterTransitionOverlap" tools:ignore="NewApi">true</item>
         <item name="android:windowAllowReturnTransitionOverlap" tools:ignore="NewApi">true</item>
