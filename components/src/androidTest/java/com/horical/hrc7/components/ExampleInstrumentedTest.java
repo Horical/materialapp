@@ -6,6 +6,9 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
@@ -14,13 +17,24 @@ import static org.junit.Assert.*;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-@RunWith(AndroidJUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ExampleInstrumentedTest {
+    @Mock
+    Context context;
+
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("com.horical.hrc7.components.test", appContext.getPackageName());
+    }
+
+    @Test
+    public void loginInvalidate() {
+        LoginView loginView = new LoginView(context);
+        Mockito.when(loginView.user_name.getText().toString()).thenReturn("hello");
+        Mockito.when(loginView.password.getText().toString()).thenReturn("hello");
+        assertTrue(loginView.isValid());
     }
 }

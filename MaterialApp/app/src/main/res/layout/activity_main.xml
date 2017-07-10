@@ -5,5 +5,8 @@
     android:layout_height="match_parent"
     tools:context="com.horical.hrc7.materialapp.MainActivity">
 
-
+    <com.horical.hrc7.materialapp.test.component.HelloView
+        android:id="@+id/helloView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></com.horical.hrc7.materialapp.test.component.HelloView>
 </android.support.constraint.ConstraintLayout>

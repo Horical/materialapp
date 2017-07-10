@@ -32,11 +32,7 @@ public abstract class BaseView<T, K> extends View {
     }
 
     protected void onInit(AttributeSet attrs) {
-        try {
-            StyleableFinder.load(this, attrs);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        StyleableFinder.load(this, attrs);
     }
 
     public void bind(T item) {

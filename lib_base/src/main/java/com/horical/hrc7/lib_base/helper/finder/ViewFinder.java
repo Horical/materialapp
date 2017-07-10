@@ -144,6 +144,23 @@ public class ViewFinder {
     /**
      * Inflate layout xml to java
      *
+     * @param viewGroup Viewgroup
+     */
+    public static View inflateView(ViewGroup viewGroup,boolean attach) {
+        Class clazz = viewGroup.getClass();
+        MyLayout myLayout = (MyLayout) clazz.getAnnotation(MyLayout.class);
+        if (myLayout == null)
+            throw new RuntimeException(viewGroup.getClass().getSimpleName() + " not found layout");
+        View viewContainer =
+                LayoutInflater.from(viewGroup.getContext()).inflate(findIdLayout(viewGroup.getContext(), myLayout), viewGroup, attach);
+        if (viewContainer == null)
+            throw new RuntimeException(viewGroup.getClass().getSimpleName() + " not found layout");
+        return viewContainer;
+    }
+
+    /**
+     * Inflate layout xml to java
+     *
      * @param dialog Dialog
      */
     public static void inflateView(Dialog dialog) {
@@ -186,14 +203,7 @@ public class ViewFinder {
             Field field = fields[i];
             ViewChild viewChild = field.getAnnotation(ViewChild.class);
             if (viewChild != null) {
-                try {
-                    View v = findView(view, viewChild);
-                    field.setAccessible(true);
-                    field.set(view, v);
-                    field.setAccessible(false);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
+                findAndMapToView(view, view, field, viewChild);
             }
         }
     }
@@ -223,14 +233,7 @@ public class ViewFinder {
             Field field = fields[i];
             ViewChild viewChild = field.getAnnotation(ViewChild.class);
             if (viewChild != null) {
-                try {
-                    View v = findView(itemView, viewChild);
-                    field.setAccessible(true);
-                    field.set(view, v);
-                    field.setAccessible(false);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
+                findAndMapToView(view, itemView, field, viewChild);
             }
         }
     }
@@ -238,11 +241,11 @@ public class ViewFinder {
     /**
      * Load child view by anotation @ChildView into field defined by view Object
      *
-     * @param viewContainer view contain childs view
-     * @param obj           Object instance of View, fragment, Dialog, Activity,... and obj has view container
+     * @param viewGroup view contain childs view
+     * @param container Object instance of View, fragment, Dialog, Activity,... and obj has view container
      */
-    public static void loadView(Object obj, View viewContainer) {
-        Class clazz = obj.getClass();
+    public static void loadView(Object container, View viewGroup) {
+        Class clazz = container.getClass();
 
         // finding view child
         Field[] fields = clazz.getDeclaredFields();
@@ -250,37 +253,39 @@ public class ViewFinder {
             Field field = fields[i];
             ViewChild viewChild = field.getAnnotation(ViewChild.class);
             if (viewChild != null) {
-                try {
-                    View v = findView(viewContainer, viewChild);
-                    field.setAccessible(true);
-                    field.set(obj, v);
-                    field.setAccessible(false);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
+                findAndMapToView(container, viewGroup, field, viewChild);
             }
         }
     }
 
-    private static View findView(Object container, ViewChild viewChild) {
-        Class clazz = container.getClass();
-
+    private static void findAndMapToView(Object container, Object viewGroup, Field field, ViewChild viewChild) {
+        Class clazz = viewGroup.getClass();
         try {
             Method findViewById = clazz.getMethod("findViewById", int.class);
-            Context context = (Context) clazz.getMethod("getContext").invoke(container);
+            Context context = null;
+            if (viewGroup instanceof Activity)
+                context = (Context) container;
+            else
+                context = (Context) clazz.getMethod("getContext").invoke(viewGroup);
+
             View view = null;
             int id = 0;
             if (viewChild.value() != 0) {
                 id = viewChild.value();
             } else if (!viewChild.name().equals("")) {
                 id = getViewIdByName(context, viewChild.name());
+            } else {
+                id = getViewIdByName(context, field.getName());
             }
             if (id == 0) throw new ClassNotFoundException("Can't find view");
 
-            view = (View) findViewById.invoke(container, (id));
+            view = (View) findViewById.invoke(viewGroup, (id));
             if (view == null) throw new ClassNotFoundException("Can't find view");
 
-            return view;
+            field.setAccessible(true);
+            field.set(container, view);
+            field.setAccessible(false);
+
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
@@ -291,7 +296,6 @@ public class ViewFinder {
             throw new RuntimeException(e);
         }
     }
-
 
     private static int findIdLayout(Context context, MyLayout myLayout) {
         int id = 0;
@@ -306,7 +310,7 @@ public class ViewFinder {
         return id;
     }
 
-    private static int getLayoutIdByName(Context context, String name) {
+    public static int getLayoutIdByName(Context context, String name) {
         return context.getResources().getIdentifier(name, "layout", context.getPackageName());
     }
 

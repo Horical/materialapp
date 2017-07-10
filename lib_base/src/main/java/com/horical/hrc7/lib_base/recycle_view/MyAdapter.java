@@ -1,5 +1,6 @@
 package com.horical.hrc7.lib_base.recycle_view;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter {
         RecyclerView.ViewHolder viewHolder = null;
         try {
             if (clazz == null) throw new NullPointerException("Clazz null");
-            int resource = getResourceValue();
+            int resource = getResourceValue(parent.getContext());
             View view = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
             Object obj = clazz.getConstructor(View.class).newInstance(view);
 
@@ -88,10 +89,17 @@ public class MyAdapter extends RecyclerView.Adapter {
 
     }
 
-    public int getResourceValue() throws ClassNotFoundException {
+    public int getResourceValue(Context context) throws ClassNotFoundException {
+        int id = 0;
         MyLayout myLayout = (MyLayout) this.clazz.getAnnotation(MyLayout.class);
         if (myLayout == null) throw new RuntimeException("Can't found layout Id");
-        return myLayout.value();
+
+        if (myLayout.value() != 0) id = myLayout.value();
+        else if (!myLayout.name().equals("")) {
+            id = ViewFinder.getLayoutIdByName(context, myLayout.name());
+        }
+        if (id == 0) throw new RuntimeException("Can't found layout Id");
+        return id;
     }
 
     public <K> void setListener(K listener) {

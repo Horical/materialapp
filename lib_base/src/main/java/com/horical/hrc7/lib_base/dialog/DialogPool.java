@@ -16,20 +16,20 @@ import java.util.Set;
 public class DialogPool {
     private static Set<BaseDialog> dialogs;
 
-    public synchronized static BaseDialog with(Context context, Class clazz) {
+    public synchronized static <T extends BaseDialog> T with(Context context, Class<T> clazz) {
         if (dialogs == null) dialogs = new HashSet<>();
 
         Iterator<BaseDialog> iterator = dialogs.iterator();
         while (iterator.hasNext()) {
             BaseDialog dialog = iterator.next();
             if (dialog.getContext() == context) {
-                return dialog;
+                return (T) dialog;
             }
         }
 
         BaseDialog dialog;
         try {
-            dialog = (BaseDialog) clazz.getConstructor(Context.class).newInstance(context);
+            dialog = clazz.getConstructor(Context.class).newInstance(context);
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -40,6 +40,6 @@ public class DialogPool {
             throw new RuntimeException(e);
         }
         dialogs.add(dialog);
-        return dialog;
+        return (T) dialog;
     }
 }

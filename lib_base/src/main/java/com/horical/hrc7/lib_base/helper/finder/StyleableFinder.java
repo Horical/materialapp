@@ -23,7 +23,7 @@ public class StyleableFinder {
     public static final byte PREFERENCE = 0x09;
     public static final byte STRING = 0x0a;
 
-    public static void load(View view, AttributeSet attrs) throws IllegalAccessException {
+    public static void load(View view, AttributeSet attrs) {
         if (attrs == null) return;
         Class clazz = view.getClass();
         int[] declareStyleableArray = getResourceDeclareStyleableIntArray(view.getContext(), clazz.getSimpleName());
@@ -38,34 +38,37 @@ public class StyleableFinder {
                 f.setAccessible(true);
 
                 int id = getAttr(view.getContext(), myAttr);
-
-                switch (myAttr.type()) {
-                    case DIMENSION:
-                        f.set(view, typedArray.getDimension(id, myAttr.defFloat()));
-                        break;
-                    case BOOL:
-                        f.set(view, typedArray.getBoolean(id, myAttr.defBool()));
-                        break;
-                    case COLOR:
-                        f.set(view, typedArray.getColor(id, myAttr.defInt()));
-                        break;
-                    case STRING:
-                        f.set(view, typedArray.getString(id));
-                        break;
-                    case INTERGER:
-                        f.set(view, typedArray.getInteger(id, myAttr.defInt()));
-                        break;
-                    case FLOAT:
-                        f.set(view, typedArray.getFloat(id, myAttr.defFloat()));
-                        break;
-                    case ENUM:
-                        throw new RuntimeException("Enum not supported currently");
-                    case FLAG:
-                        throw new RuntimeException("Flag not supported currently");
-                    case FRAGTION:
-                        throw new RuntimeException("Fragtion not supported currently");
-                    case PREFERENCE:
-                        throw new RuntimeException("Fragtion not supported currently");
+                try {
+                    switch (myAttr.type()) {
+                        case DIMENSION:
+                            f.set(view, typedArray.getDimension(id, myAttr.defFloat()));
+                            break;
+                        case BOOL:
+                            f.set(view, typedArray.getBoolean(id, myAttr.defBool()));
+                            break;
+                        case COLOR:
+                            f.set(view, typedArray.getColor(id, myAttr.defInt()));
+                            break;
+                        case STRING:
+                            f.set(view, typedArray.getString(id));
+                            break;
+                        case INTERGER:
+                            f.set(view, typedArray.getInteger(id, myAttr.defInt()));
+                            break;
+                        case FLOAT:
+                            f.set(view, typedArray.getFloat(id, myAttr.defFloat()));
+                            break;
+                        case ENUM:
+                            throw new RuntimeException("Enum not supported currently");
+                        case FLAG:
+                            throw new RuntimeException("Flag not supported currently");
+                        case FRAGTION:
+                            throw new RuntimeException("Fragtion not supported currently");
+                        case PREFERENCE:
+                            throw new RuntimeException("Fragtion not supported currently");
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
                 f.setAccessible(false);
             }
