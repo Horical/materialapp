@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<template
+    format="5"
+    revision="3"
+    name="Holder (Template)"
+    description="Creates a new item view holder that extends Recycle.ViewHolder.">
+
+    <category value="Horical Framework" />
+
+    <parameter
+        id="packageName"
+        name="Package name"
+        type="string"
+        constraints="package"
+        default="com.mycompany.myapp" />
+
+    <parameter
+        id="viewClass"
+        name="View Class"
+        type="string"
+        constraints="class|unique|nonempty"
+        default="MyHolder"
+        help="Named for item view holder" />
+		
+	<parameter
+        id="viewLayout"
+        name="View Layout Name"
+        type="string"
+        constraints="layout|nonempty|unique"
+        default="item_view_my"
+        suggest="item_view_${classToResource(viewClass)}"
+        help="The name of the layout to create" />
+	
+	<parameter
+        id="includeCallbacks"
+        name="Include interface callbacks?"
+        type="boolean"
+        default="true"
+        help="Generate event callbacks for dialog" />
+	
+	<parameter
+        id="isCreateOnLib"
+        name="Create view holder on Lib"
+        type="boolean"
+        default="true"
+        help="if this view holder created on lib, class name mapping with layout by String, else by ID" />	
+
+    <globals file="globals.xml.ftl" />
+    <execute file="recipe.xml.ftl" />
+
+</template>
