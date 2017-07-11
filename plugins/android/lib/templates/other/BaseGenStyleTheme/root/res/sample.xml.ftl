@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MyMaterialTheme" parent="${nameMaterialTheme}.Base">
+    <style name="${nameMaterialTheme}" parent="${nameMaterialTheme}.Base">
         <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>
         <item name="android:windowAllowEnterTransitionOverlap" tools:ignore="NewApi">true</item>
         <item name="android:windowAllowReturnTransitionOverlap" tools:ignore="NewApi">true</item>
