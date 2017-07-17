@@ -46,8 +46,7 @@ public class ${className} extends BaseFragment<${className}.Item, <#if includeCa
 	
 	
 	@Override
-    public void bind(Item item) {
-        super.bind(item);
+    protected void onBind(Item item) {
         // TODO: bind data to view
 
     }

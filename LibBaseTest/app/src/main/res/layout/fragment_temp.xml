@@ -4,10 +4,4 @@
     android:layout_height="match_parent"
     tools:context="com.horical.hrc7.libbasetest.hola.TempFragment">
 
-    <TextView
-        android:id="@+id/frag_text"
-        android:text="sadfasd"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center" />
 </FrameLayout>

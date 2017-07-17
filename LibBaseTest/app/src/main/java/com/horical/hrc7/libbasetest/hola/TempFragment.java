@@ -1,12 +1,10 @@
 package com.horical.hrc7.libbasetest.hola;
 
 import android.os.Bundle;
-import android.widget.TextView;
 
 import com.horical.hrc7.lib_base.fragment.BaseFragment;
 import com.horical.hrc7.lib_base.helper.finder.MyLayout;
 
-import com.horical.hrc7.lib_base.helper.finder.ViewChild;
 import com.horical.hrc7.libbasetest.R;
 
 /**
@@ -17,8 +15,6 @@ import com.horical.hrc7.libbasetest.R;
 public class TempFragment extends BaseFragment<TempFragment.Item, TempFragment.Listener> {
     private static final String ARG_PARAM = "ARG_PARAM";
     private String param;
-    @ViewChild
-    TextView frag_text;
 
     public TempFragment() {
 
@@ -47,13 +43,14 @@ public class TempFragment extends BaseFragment<TempFragment.Item, TempFragment.L
 
 
     @Override
-    protected void onBind(Item item) {
-        frag_text.setText(item.getTitle());
+    public void bind(Item item) {
+        super.bind(item);
+        // TODO: bind data to view
+
     }
 
     public interface Item {
 
-        String getTitle();
     }
 
     public interface Listener {
