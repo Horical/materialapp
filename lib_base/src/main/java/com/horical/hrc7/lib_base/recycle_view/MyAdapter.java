@@ -17,8 +17,8 @@ import java.util.List;
  * Created by quang.pv on 6/1/2017.
  */
 
-public class MyAdapter extends RecyclerView.Adapter {
-    List items;
+public class MyAdapter<T> extends RecyclerView.Adapter {
+    List<T> items;
     Class clazz;
     Object listener;
 
@@ -75,6 +75,10 @@ public class MyAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public List<T> getItems() {
+        return items;
     }
 
     @Override

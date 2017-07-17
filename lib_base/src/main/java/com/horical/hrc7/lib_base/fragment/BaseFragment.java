@@ -27,11 +27,14 @@ public abstract class BaseFragment<T, K> extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupView();
+        if (item != null)
+            onBind(item);
     }
 
     public void bind(T item) {
         this.item = item;
-        onBind(item);
+        if (isAdded())
+            onBind(item);
     }
 
     public void setListener(K listener) {

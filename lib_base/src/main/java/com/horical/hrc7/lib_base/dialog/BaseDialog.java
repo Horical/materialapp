@@ -11,7 +11,7 @@ import com.horical.hrc7.lib_base.helper.finder.ViewFinder;
  */
 
 public abstract class BaseDialog<T, K> extends Dialog {
-    private T item;
+    protected T item;
     private K listener;
 
     public BaseDialog(@NonNull Context context) {

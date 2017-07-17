@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="BaseCustomView">
-        <attr name="size" format="dimension" />
+
+    <declare-styleable name="MyCustomView">
+        <attr name="size" format="reference" />
+        <attr name="name" format="reference" />
     </declare-styleable>
 </resources>

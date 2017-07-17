@@ -146,7 +146,7 @@ public class ViewFinder {
      *
      * @param viewGroup Viewgroup
      */
-    public static View inflateView(ViewGroup viewGroup,boolean attach) {
+    public static View inflateView(ViewGroup viewGroup, boolean attach) {
         Class clazz = viewGroup.getClass();
         MyLayout myLayout = (MyLayout) clazz.getAnnotation(MyLayout.class);
         if (myLayout == null)
@@ -277,10 +277,13 @@ public class ViewFinder {
             } else {
                 id = getViewIdByName(context, field.getName());
             }
-            if (id == 0) throw new ClassNotFoundException("Can't find view");
+
+            if (id == 0)
+                throw new ClassNotFoundException("Can't find view " + field.getName());
 
             view = (View) findViewById.invoke(viewGroup, (id));
-            if (view == null) throw new ClassNotFoundException("Can't find view");
+            if (view == null)
+                throw new ClassNotFoundException("Can't find view " + field.getName());
 
             field.setAccessible(true);
             field.set(container, view);

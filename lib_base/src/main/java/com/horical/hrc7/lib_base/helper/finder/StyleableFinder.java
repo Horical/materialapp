@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.horical.hrc7.lib_base.R;
+
 import java.lang.reflect.Field;
 
 /**
@@ -20,7 +22,7 @@ public class StyleableFinder {
     public static final byte FLOAT = 0x06;
     public static final byte FRAGTION = 0x07;
     public static final byte INTERGER = 0x08;
-    public static final byte PREFERENCE = 0x09;
+    public static final byte REFERENCE = 0x09;
     public static final byte STRING = 0x0a;
 
     public static void load(View view, AttributeSet attrs) {
@@ -28,7 +30,6 @@ public class StyleableFinder {
         Class clazz = view.getClass();
         int[] declareStyleableArray = getResourceDeclareStyleableIntArray(view.getContext(), clazz.getSimpleName());
         TypedArray typedArray = view.getContext().obtainStyledAttributes(attrs, declareStyleableArray);
-
         if (typedArray == null) return;
 
         Field[] fields = clazz.getDeclaredFields();
@@ -37,7 +38,7 @@ public class StyleableFinder {
             if (myAttr != null) {
                 f.setAccessible(true);
 
-                int id = getAttr(view.getContext(), myAttr);
+                int id = getAttr(view.getContext(), declareStyleableArray, myAttr, f);
                 try {
                     switch (myAttr.type()) {
                         case DIMENSION:
@@ -58,14 +59,16 @@ public class StyleableFinder {
                         case FLOAT:
                             f.set(view, typedArray.getFloat(id, myAttr.defFloat()));
                             break;
+                        case REFERENCE:
+                            f.set(view, typedArray.getResourceId(id, myAttr.defInt()));
+                            break;
                         case ENUM:
                             throw new RuntimeException("Enum not supported currently");
                         case FLAG:
                             throw new RuntimeException("Flag not supported currently");
                         case FRAGTION:
                             throw new RuntimeException("Fragtion not supported currently");
-                        case PREFERENCE:
-                            throw new RuntimeException("Fragtion not supported currently");
+
                     }
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
@@ -79,16 +82,16 @@ public class StyleableFinder {
     private static int[] getResourceDeclareStyleableIntArray(Context context, String name) {
         try {
             //use reflection to access the resource class
-            Field[] fields2 = Class.forName(context.getPackageName() + ".R$styleable").getFields();
-
+            Field field = Class.forName(context.getPackageName() + ".R$styleable").getDeclaredField(name);
+            if (field != null) return (int[]) field.get(null);
             //browse all fields
-            for (Field f : fields2) {
-                //pick matching field
-                if (f.getName().equals(name)) {
-                    //return as int array
-                    return (int[]) f.get(null);
-                }
-            }
+//            for (Field f : fields2) {
+//                //pick matching field
+//                if (f.getName().equals(name)) {
+//                    //return as int array
+//                    return (int[]) f.get(null);
+//                }
+//            }
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -96,13 +99,27 @@ public class StyleableFinder {
         return null;
     }
 
-    private static int getAttr(Context context, MyAttr myAttr) {
+    private static int getAttr(Context context, int[] declareStyleableArray, MyAttr myAttr, Field f) {
         int id = -1;
         if (myAttr.id() != -1) {
             id = myAttr.id();
-        } else if (!myAttr.name().equals("")) {
-            id = context.getResources().getIdentifier(myAttr.name(), "id",
+        } else {
+            String key = null;
+
+            if (!myAttr.name().equals("")) {
+                key = myAttr.name();
+            } else {
+                key = f.getName();
+            }
+
+            int tmp = context.getResources().getIdentifier(key, "attr",
                     context.getPackageName());
+            for (int i = 0; i < declareStyleableArray.length; i++) {
+                if (tmp == declareStyleableArray[i]) {
+                    id = i;
+                    break;
+                }
+            }
         }
         if (id == -1) throw new RuntimeException("Can't found attribute");
         return id;

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">LibBaseTest</string>
+    <string name="test">hello world</string>
+    <string name="test1">hello world1111</string>
 </resources>
