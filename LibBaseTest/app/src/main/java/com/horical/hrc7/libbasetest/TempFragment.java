@@ -1,29 +1,26 @@
-package ${packageName};
+package com.horical.hrc7.libbasetest;
 
 import android.os.Bundle;
+
 import com.horical.hrc7.lib_base.fragment.BaseFragment;
 import com.horical.hrc7.lib_base.helper.finder.MyLayout;
 
-<#if applicationPackage??>
-import ${applicationPackage}.R;
-</#if>
 
 /**
  * Created by HRC7 on 7/4/2017.
  */
 
-@MyLayout(<#if isCreateOnLib>name="${escapeXmlAttribute(fragmentName)}"<#else>R.layout.${escapeXmlAttribute(fragmentName)}</#if>)
-public class ${className} extends BaseFragment<${className}.Item, <#if includeCallbacks>${className}.Listener<#else>Object</#if>> {
-<#if includeFactory>
+@MyLayout(name = "fragment_temp2")
+public class TempFragment extends BaseFragment<TempFragment.Item, TempFragment.Listener> {
     private static final String ARG_PARAM = "ARG_PARAM";
     private String param;
 
-    public ${className}() {
-	
+    public TempFragment() {
+
     }
 
-    public static ${className} newInstance(String param) {
-        ${className} fragment = new ${className}();
+    public static TempFragment newInstance(String param) {
+        TempFragment fragment = new TempFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM, param);
         fragment.setArguments(args);
@@ -37,27 +34,22 @@ public class ${className} extends BaseFragment<${className}.Item, <#if includeCa
             param = getArguments().getString(ARG_PARAM);
         }
     }
-</#if>
 
     @Override
     protected void setupView() {
-	
-    }
-	
-	
-	@Override
-    public void bind(Item item) {
-        super.bind(item);
-        // TODO: bind data to view
 
     }
 
-	public interface Item {
+
+    @Override
+    protected void onBind(Item item) {
 
     }
-	
-<#if includeCallbacks>
+
+    public interface Item {
+
+    }
+
     public interface Listener {
     }
-</#if>
 }

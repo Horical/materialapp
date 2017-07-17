@@ -1,4 +1,4 @@
-package ${packageName};
+package com.horical.hrc7.libbasetest;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -7,32 +7,27 @@ import android.widget.FrameLayout;
 import com.horical.hrc7.lib_base.helper.finder.MyLayout;
 import com.horical.hrc7.lib_base.helper.finder.ViewFinder;
 
-<#if applicationPackage??>
-import ${applicationPackage}.R;
-</#if>
 
 /**
  * Created by HRC7 on 7/6/2017.
  */
 
-@MyLayout(<#if isCreateOnLib>name="${escapeXmlAttribute(viewName)}"<#else>R.layout.${escapeXmlAttribute(viewName)}</#if>)
-public class ${className} extends FrameLayout {
+@MyLayout(name="view_my_custom_view")
+public class MyCustomView extends FrameLayout {
 	Item item;
-<#if includeCallbacks>
 	Listener listener;
-</#if>
 
-    public ${className}(Context context) {
+    public MyCustomView(Context context) {
         super(context);
 		onInit(null);
     }
 
-    public ${className}(Context context, @Nullable AttributeSet attrs) {
+    public MyCustomView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 		onInit(attrs);
     }
 
-    public ${className}(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MyCustomView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 		onInit(attrs);
     }
@@ -44,8 +39,6 @@ public class ${className} extends FrameLayout {
 	public void bind(Item item)
 	{
 		this.item = item;
-		// TODO: bind data to view
-		
 	}
 	
 	public interface Item {
@@ -56,11 +49,9 @@ public class ${className} extends FrameLayout {
         this.listener = listener;
     }
 	
-<#if includeCallbacks>
 	public interface Listener
     {
 
     }
-</#if>
 
 }

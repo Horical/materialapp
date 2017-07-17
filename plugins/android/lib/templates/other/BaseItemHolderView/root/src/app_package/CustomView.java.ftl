@@ -21,8 +21,10 @@ public class ${viewClass} extends BaseViewHolder<${viewClass}.Item,<#if includeC
     }
 
     @Override
-    protected void onBind(Item item) {
-        
+    public void bind(Item item) {
+        super.bind(item);
+        // TODO: binding data to view
+
     }
 	
 	public interface Item {

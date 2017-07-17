@@ -17,7 +17,7 @@ import ${applicationPackage}.R;
 
 public class ${className} extends BaseView<${className}.Item,<#if includeCallbacks>${className}.Listener<#else>Object</#if>> {
 
-    @MyAttr(<#if isCreateOnLib>name = "${className}_size"<#else>id = R.styleable.${className}_size</#if>
+    @MyAttr(<#if isCreateOnLib>name = "size"<#else>id = R.styleable.${className}_size</#if>
             , type = StyleableFinder.DIMENSION,defFloat = 100)
     float size;
 
@@ -34,7 +34,14 @@ public class ${className} extends BaseView<${className}.Item,<#if includeCallbac
     }
 	
 	@Override
-    protected void onBind(Item item) {
+    protected void setupView() {
+
+    }
+
+    @Override
+    public void bind(Item item) {
+        super.bind(item);
+        // TODO: bind data to view
 
     }
 	

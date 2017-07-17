@@ -17,9 +17,15 @@ public class ${className} extends BaseDialog<${className}.Item,<#if includeCallb
         super(context);
     } 
 	
-	@Override
-    protected void onBind(Item item) {
+	 @Override
+    protected void setupView() {
+    }
 
+    @Override
+    public BaseDialog bind(Item item) {
+        // TODO: bind data to view
+
+        return super.bind(item);
     }
 	
 	public interface Item {
